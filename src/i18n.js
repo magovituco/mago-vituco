@@ -32,7 +32,7 @@ export const TEXTS = {
     stepsTap: {
       0: {
         label: 'Paso 1 de 4',
-        lead: 'Mira los emojis, elige uno en silencio y toca sobre él con el dedo.',
+        lead: 'Mira los emojis y elige uno en silencio. Pon tu dedo encima y no lo muevas.',
       },
       1: {
         label: 'Paso 2 de 4',
@@ -97,7 +97,7 @@ export const TEXTS = {
     stepsTap: {
       0: {
         label: 'Step 1 of 4',
-        lead: 'Look at the emojis, silently pick one and tap on it with your finger.',
+        lead: 'Look at the emojis and silently choose one. Place your finger on it and don’t move it.',
       },
       1: {
         label: 'Step 2 of 4',
