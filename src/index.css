@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 240 6% 96%;
+    --card: 0 0% 4%;
+    --card-foreground: 240 6% 96%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 240 6% 96%;
+    --primary: 39 48% 56%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 240 5% 12%;
+    --secondary-foreground: 240 6% 96%;
+    --muted: 240 5% 12%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 39 48% 56%;
+    --accent-foreground: 0 0% 4%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5% 16%;
+    --input: 240 5% 16%;
+    --ring: 39 48% 56%;
+    --chart-1: 39 48% 56%;
+    --chart-2: 271 68% 60%;
+    --chart-3: 0 72% 56%;
+    --chart-4: 45 92% 60%;
+    --chart-5: 199 80% 55%;
+    --radius: 0.75rem;
+    --font-heading: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Cormorant Garamond', ui-serif, Georgia, serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 240 6% 96%;
+    --sidebar-primary: 39 48% 56%;
+    --sidebar-primary-foreground: 0 0% 4%;
+    --sidebar-accent: 240 5% 12%;
+    --sidebar-accent-foreground: 240 6% 96%;
+    --sidebar-border: 240 5% 16%;
+    --sidebar-ring: 39 48% 56%;
+  }
+
+  html {
+    color-scheme: dark;
+    background-color: hsl(var(--background));
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body;
+    background-color: hsl(var(--background));
+    overscroll-behavior-y: none;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
+
+@layer utilities {
+  .vituco-stage,
+  .vituco-stage img {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .vituco-stage img {
+    pointer-events: none;
+  }
+
+  .vituco-breathe {
+    animation: vituco-breathe 5s ease-in-out infinite;
+  }
+
+  .vituco-shimmer-text {
+    background-image: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.72) 25%,
+      #f4dda6 45%,
+      rgba(255, 255, 255, 0.72) 65%
+    );
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: vituco-shimmer 3.2s linear infinite;
+  }
+}
+
+@keyframes vituco-breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes vituco-shimmer {
+  0% {
+    background-position: 160% 0;
+  }
+  100% {
+    background-position: -60% 0;
+  }
+}
