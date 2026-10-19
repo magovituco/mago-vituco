@@ -8,8 +8,8 @@ export default function FollowReveal({ t }) {
     <motion.div
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 1.15, ease: [0.22, 1, 0.36, 1] }}
-      className="flex w-full flex-col items-center gap-5 text-center"
+      transition={{ duration: 0.8, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
+      className="flex w-full flex-col items-center gap-4 text-center"
     >
       <div className="space-y-1.5">
         <p className="font-display text-[27px] font-light leading-tight tracking-wide text-[#C5A059]">

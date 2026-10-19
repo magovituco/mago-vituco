@@ -108,7 +108,13 @@ export default function Home() {
       <VitucoHeader />
 
       <main className="relative z-10 flex flex-1 flex-col items-center justify-center gap-6 px-6 pb-[max(1.75rem,env(safe-area-inset-bottom))] pt-1">
-        <InstructionText step={step} lifted={lifted} t={t} />
+        <div className="flex min-h-[8.5rem] w-full items-center justify-center">
+          {revealed ? (
+            <FollowReveal t={t} />
+          ) : (
+            <InstructionText step={step} lifted={lifted} t={t} />
+          )}
+        </div>
         <EmojiStage
           revealed={revealed}
           t={t}
@@ -116,7 +122,6 @@ export default function Home() {
           onMove={handleMove}
           onLift={handleLift}
         />
-        {revealed && <FollowReveal t={t} />}
       </main>
     </div>
   );
