@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Img from './Img';
 
@@ -12,42 +11,69 @@ const FINAL_REMOTE =
   'https://media.base44.com/images/public/user_6a1994aa166a97b25e28fdcf/d0bb91d12_A140EC49-2345-4CE4-9B12-5A2A9C2C862F.jpeg';
 
 const RIPPLE_SIZE = 110;
+// Distancia que debe recorrer el dedo (en % del ancho de la imagen) para contar como "cambio de emoji"
+const MOVE_THRESHOLD = 0.1;
 const ease = [0.22, 1, 0.36, 1];
 
-export default function EmojiStage({ revealed, onAdvance }) {
+export default function EmojiStage({ revealed, t, onDown, onMove, onLift }) {
   const [ripples, setRipples] = useState([]);
   const [pulse, setPulse] = useState(0);
+  const activePointer = useRef(null);
+  const anchor = useRef({ x: 0, y: 0 });
 
-  const registerTouch = (clientX, clientY, element) => {
+  const addRipple = (clientX, clientY, element) => {
     const rect = element.getBoundingClientRect();
-    const id = `${Date.now()}-${pulse}`;
+    const id = `${Date.now()}-${Math.random()}`;
     setRipples((current) => [...current, { id, x: clientX - rect.left, y: clientY - rect.top }]);
     window.setTimeout(() => setRipples((current) => current.filter((item) => item.id !== id)), 850);
     setPulse((value) => value + 1);
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(12);
-    onAdvance();
   };
 
   const handlePointerDown = (event) => {
-    if (revealed) return;
-    registerTouch(event.clientX, event.clientY, event.currentTarget);
+    if (revealed || activePointer.current !== null) return;
+    activePointer.current = event.pointerId;
+    anchor.current = { x: event.clientX, y: event.clientY };
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // algunos navegadores no lo permiten: seguimos igualmente
+    }
+    addRipple(event.clientX, event.clientY, event.currentTarget);
+    onDown();
   };
 
-  const handleKeyDown = (event) => {
-    if (revealed || (event.key !== 'Enter' && event.key !== ' ')) return;
-    event.preventDefault();
+  const handlePointerMove = (event) => {
+    if (revealed || event.pointerId !== activePointer.current) return;
     const rect = event.currentTarget.getBoundingClientRect();
-    registerTouch(rect.left + rect.width / 2, rect.top + rect.height / 2, event.currentTarget);
+    const dx = event.clientX - anchor.current.x;
+    const dy = event.clientY - anchor.current.y;
+    if (Math.hypot(dx, dy) < rect.width * MOVE_THRESHOLD) return;
+    anchor.current = { x: event.clientX, y: event.clientY };
+    addRipple(event.clientX, event.clientY, event.currentTarget);
+    onMove();
+  };
+
+  const handlePointerEnd = (event) => {
+    if (event.pointerId !== activePointer.current) return;
+    activePointer.current = null;
+    try {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    } catch {
+      // ignorar
+    }
+    onLift();
   };
 
   return (
-    <div className="vituco-stage relative -mx-6" style={{ width: 'min(100vw, 60dvh, 560px)' }}>
+    <div className="vituco-stage relative -mx-6" style={{ width: 'min(100vw, 56dvh, 560px)' }}>
       <div
-        role="button"
-        tabIndex={0}
-        aria-label="Imagen del truco: toca para continuar"
+        role="img"
+        aria-label={t.stageLabel}
         onPointerDown={handlePointerDown}
-        onKeyDown={handleKeyDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerEnd}
+        onPointerCancel={handlePointerEnd}
         onContextMenu={(event) => event.preventDefault()}
         className="relative aspect-square w-full cursor-pointer touch-none select-none overflow-hidden rounded-[20px] bg-black outline-none"
       >
@@ -60,7 +86,7 @@ export default function EmojiStage({ revealed, onAdvance }) {
           <Img
             src={GRID_LOCAL}
             fallback={GRID_REMOTE}
-            alt="Cuadrícula de emojis del truco"
+            alt={t.gridAlt}
             fit="cover"
             className="block h-full w-full"
           />
@@ -75,7 +101,7 @@ export default function EmojiStage({ revealed, onAdvance }) {
           <Img
             src={FINAL_LOCAL}
             fallback={FINAL_REMOTE}
-            alt="Emoji final: chistera de mago con varita y estrellas"
+            alt={t.finalAlt}
             fit="cover"
             position="50% 30%"
             className="block h-full w-full"
